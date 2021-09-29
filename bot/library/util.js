@@ -1,6 +1,7 @@
 const { BigNumber } = require("bignumber.js");
-const config = require(`./${process.env.BOT_ENV || "prod"
-  }-network-config.json`);
+const config = require(`./${
+  process.env.BOT_ENV || "prod"
+}-network-config.json`);
 
 /**
  * Returns the minimum expected value by an initiator after deducting reward for swap responder
@@ -22,6 +23,10 @@ module.exports.calcSwapReturn = (swapValue, rewardInBIPS) => {
  * minTradeVolume : contains minimum volume of swaps expected of each asset for each pair, helps calculate estimated eth balance req. (no. of swaps = maxVolume/minVolume)*feePerTx*feePad
  */
 module.exports.constants = {
+  tokenTypes: {
+    FA2: "fa2",
+    FA12: "FA12",
+  },
   feePad: {
     "usdc/usdtz": {
       usdc: new BigNumber(config.pairs["usdc/usdtz"]["usdc"].feePad),
@@ -34,6 +39,10 @@ module.exports.constants = {
     "wbtc/tzbtc": {
       wbtc: new BigNumber(config.pairs["wbtc/tzbtc"]["wbtc"].feePad),
       tzbtc: new BigNumber(config.pairs["wbtc/tzbtc"]["tzbtc"].feePad),
+    },
+    "wbtc/btctz": {
+      wbtc: new BigNumber(config.pairs["wbtc/btctz"]["wbtc"].feePad),
+      btctz: new BigNumber(config.pairs["wbtc/btctz"]["btctz"].feePad),
     },
   },
   minTradeVolume: {
@@ -59,6 +68,14 @@ module.exports.constants = {
       ).multipliedBy(10 ** 8),
       tzbtc: new BigNumber(
         config.pairs["wbtc/tzbtc"]["tzbtc"].minTradeVolume
+      ).multipliedBy(10 ** 8),
+    },
+    "wbtc/btctz": {
+      wbtc: new BigNumber(
+        config.pairs["wbtc/btctz"]["wbtc"].minTradeVolume
+      ).multipliedBy(10 ** 8),
+      btctz: new BigNumber(
+        config.pairs["wbtc/btctz"]["btctz"].minTradeVolume
       ).multipliedBy(10 ** 8),
     },
   },

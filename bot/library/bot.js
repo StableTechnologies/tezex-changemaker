@@ -1,5 +1,6 @@
-const config = require(`./${process.env.BOT_ENV || "prod"
-  }-network-config.json`);
+const config = require(`./${
+  process.env.BOT_ENV || "prod"
+}-network-config.json`);
 const Web3 = require("web3");
 const respondToSwap = require("./respond-to-swap");
 const { calcSwapReturn, getAssets, getCounterPair, STATE } = require("./util");
@@ -67,9 +68,9 @@ module.exports = class Bot {
               tokenContract =
                 asset !== "eth"
                   ? new web3.eth.Contract(
-                    config.pairs[pair][asset].tokenContract.abi,
-                    config.pairs[pair][asset].tokenContract.address
-                  )
+                      config.pairs[pair][asset].tokenContract.abi,
+                      config.pairs[pair][asset].tokenContract.address
+                    )
                   : undefined;
             }
             volume[pair][asset] = new BigNumber(
@@ -177,6 +178,14 @@ module.exports = class Bot {
                 this.swapPairs[pair][asset].remainingVolume
               )
             ) {
+              if (
+                network === "tezos" &&
+                this.swapPairs[pair][asset].tokenContract.type ===
+                  constants.tokenTypes.FA2 &&
+                allowances[i] === "1"
+              ) {
+                continue;
+              }
               this.logger.warn(
                 `mismatch for ${asset} : ${allowances[i]} ${this.swapPairs[
                   pair
@@ -230,17 +239,25 @@ module.exports = class Bot {
             const tempVal = this.swapPairs[swap.pair][
               swap.asset
             ].remainingVolume.plus(swap.value);
-            const allowance = await this.clients[swap.network].tokenAllowance(
-              this.swapPairs[swap.pair][swap.asset].tokenContract,
-              this.swapPairs[swap.pair][swap.asset].swapContract,
-              this.clients[swap.network].account
-            );
-            if (!new BigNumber(allowance).eq(tempVal))
-              await this.clients[swap.network].approveToken(
+            if (
+              !(
+                swap.network === "tezos" &&
+                this.swapPairs[swap.pair][swap.asset].tokenContract.type ===
+                  constants.tokenTypes.FA2
+              )
+            ) {
+              const allowance = await this.clients[swap.network].tokenAllowance(
                 this.swapPairs[swap.pair][swap.asset].tokenContract,
                 this.swapPairs[swap.pair][swap.asset].swapContract,
-                tempVal.toString()
+                this.clients[swap.network].account
               );
+              if (!new BigNumber(allowance).eq(tempVal))
+                await this.clients[swap.network].approveToken(
+                  this.swapPairs[swap.pair][swap.asset].tokenContract,
+                  this.swapPairs[swap.pair][swap.asset].swapContract,
+                  tempVal.toString()
+                );
+            }
             this.swapPairs[swap.pair][swap.asset].remainingVolume = tempVal;
           } catch (err) {
             console.error("[x] FAILED TO RE-APPROVE FUNDS" + "\n" + err);
@@ -289,10 +306,14 @@ module.exports = class Bot {
               (this.swaps[key].network === "tezos" && swp === undefined)
             ) {
               console.log(
-                `[!] SWAP IS ALREADY REDEEMED OR REFUNDED ${this.swapPairs[this.swaps[key].pair][this.swaps[key].asset].symbol
+                `[!] SWAP IS ALREADY REDEEMED OR REFUNDED ${
+                  this.swapPairs[this.swaps[key].pair][this.swaps[key].asset]
+                    .symbol
                 } SWAP : ${key}\n`
               );
-              this.logger.warn("swap already redeemed or refunded", { swap: key });
+              this.logger.warn("swap already redeemed or refunded", {
+                swap: key,
+              });
               this.swaps[key].state = STATE.REFUNDED;
               await this.updateSwap(this.swaps[key]);
               continue;
@@ -308,8 +329,7 @@ module.exports = class Bot {
             console.log(`[!] REFUNDED SWAP(${refAsset}): ${key}`);
           } catch (err) {
             console.error(
-              `[x] FAILED TO REFUND SWAP(${refAsset}): ${key}\n` +
-              err
+              `[x] FAILED TO REFUND SWAP(${refAsset}): ${key}\n` + err
             );
             this.logger.error(`failed to refund swap: ${key}`, err);
           }
@@ -393,14 +413,13 @@ module.exports = class Bot {
               refundTime:
                 swp.refundTimestamp -
                 config.swapConstants.refundPeriod /
-                config.swapConstants.refundFactor,
+                  config.swapConstants.refundFactor,
               network: network,
               pair: pair,
               asset: asset,
             };
-            this.swapPairs[pair][asset].remainingVolume = this.swapPairs[pair][
-              asset
-            ].remainingVolume.minus(valueToPay);
+            this.swapPairs[pair][asset].remainingVolume =
+              this.swapPairs[pair][asset].remainingVolume.minus(valueToPay);
             respondToSwap(
               this.swaps[swp.hashedSecret],
               counterNetwork,
@@ -456,8 +475,9 @@ module.exports = class Bot {
         const currentSwapStats = {};
         for (const pair of pairs) {
           const assets = pair.split("/");
-          swapStats += `    [-] ${this.swapPairs[pair][assets[0]].symbol}/${this.swapPairs[pair][assets[1]].symbol
-            }\n`;
+          swapStats += `    [-] ${this.swapPairs[pair][assets[0]].symbol}/${
+            this.swapPairs[pair][assets[1]].symbol
+          }\n`;
           currentSwapStats[pair] = {};
           for (const asset of assets) {
             const networkFee =
@@ -482,7 +502,8 @@ module.exports = class Bot {
           currentSwapStats,
         });
         console.log(
-          `\n\n[*]CURRENT STATUS :\n  [!] ACTIVE SWAP COUNT : ${Object.keys(this.swaps).length
+          `\n\n[*]CURRENT STATUS :\n  [!] ACTIVE SWAP COUNT : ${
+            Object.keys(this.swaps).length
           }\n  [!] SWAP REWARD RATE : ${this.reward.toString()} BPS\n  [!] SWAP STATS :\n${swapStats}`
         );
       } catch (err) {
@@ -748,6 +769,16 @@ module.exports = class Bot {
             .multipliedBy(10 ** 8)
             .toFixed(0, 2)
         ),
+      btctz: ({ eth, xtz }) =>
+        new BigNumber(
+          eth
+            .div(10 ** 18)
+            .multipliedBy(new BigNumber(eth_usd))
+            .plus(xtz.div(10 ** 6).multipliedBy(new BigNumber(xtz_usd)))
+            .div(new BigNumber(btc_usd))
+            .multipliedBy(10 ** 8)
+            .toFixed(0, 2)
+        ),
       usdc: ({ eth, xtz }) =>
         new BigNumber(
           eth
@@ -801,6 +832,10 @@ module.exports = class Bot {
       "wbtc/tzbtc": {
         wbtc: (amt) => amt,
         tzbtc: (amt) => amt,
+      },
+      "wbtc/btctz": {
+        wbtc: (amt) => amt,
+        btctz: (amt) => amt,
       },
     };
     return {

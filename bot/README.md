@@ -37,10 +37,14 @@ tezex@bot:~/TEZEX/bot$ npm i
     "eth/ethtz": {
       "eth": 0.1,
       "ethtz": 0.1
-    },    
+    },
     "wbtc/tzbtc": {
       "wbtc": 0.1,
       "tzbtc": 0.1
+    },
+    "wbtc/btctz": {
+      "wbtc": 0.1,
+      "btctz": 0.1
     }
   }
 }
@@ -79,21 +83,21 @@ Please Confirm Details:
 
 - Ethereum Details:
 --- Account: 0x......
---- Asset Balance: 
+--- Asset Balance:
   -- ETH : 0 eth
   -- USDC : 0 usdc
---- Bot trade Volume: 
+--- Bot trade Volume:
   -- ETH : 0.1 eth
   -- USDC : 300 usdc
 
 
 - Tezos Details:
 --- Account: tz1......
---- Asset Balance: 
+--- Asset Balance:
   -- XTZ : 0.122895 xtz
   -- USDtz : 10.845897 usdtz
   -- ETHtz : 0 ethtz
---- Bot trade Volume: 
+--- Bot trade Volume:
   -- XTZ : 0 xtz
   -- USDtz : 300 usdtz
   -- ETHtz : 0.1 ethtz

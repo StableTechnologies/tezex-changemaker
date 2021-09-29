@@ -21,3 +21,10 @@ module.exports.getCounterPair = (pairString, asset) => {
   if (items[1] !== asset) return items[1];
   throw new Error("counter pair not found");
 };
+
+module.exports.constants = {
+  tokenTypes: {
+    FA2: "fa2",
+    FA12: "FA12",
+  },
+};

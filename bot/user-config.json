@@ -17,6 +17,10 @@
         "wbtc/tzbtc": {
             "wbtc": 0.1,
             "tzbtc": 0.1
+        },
+        "wbtc/btctz": {
+            "wbtc": 0.1,
+            "btctz": 0.1
         }
     }
 }
