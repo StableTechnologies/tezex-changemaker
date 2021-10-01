@@ -91,8 +91,8 @@ const validateBalance = ({
           ].balance
             .div(10 ** balances[asset].decimals)
             .toString()} ${balances[asset].symbol} < ${balances[asset].need
-              .div(10 ** balances[asset].decimals)
-              .toString()} ${balances[asset].symbol}\n`
+            .div(10 ** balances[asset].decimals)
+            .toString()} ${balances[asset].symbol}\n`
         );
       }
     }
