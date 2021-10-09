@@ -1,4 +1,4 @@
-# TEZEX BOT
+# TEZEX BOT (Cross-chain swaps)
 
 TEZEX Bot instances are run by the market makers of the TEZEX platform. Do read the [warning](#warning) section at the end before running the bot.
 
