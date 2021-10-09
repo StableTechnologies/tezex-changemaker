@@ -5,8 +5,8 @@ TEZEX Bot instances are run by the market makers of the TEZEX platform. Do read 
 ## Requirements
 
 1. Node 12.x
-2. Ethereum Account with USDC tokens and sufficient eth
-3. Tezos Account with USDtz, ETHtz tokens and sufficient xtz
+2. Ethereum Account (wallet) with sufficient Ethereum-side tokens for which you want to facilitate swaps (e.g. USDC, ETH, WBTC), and sufficient additional ETH (for gas)
+3. Tezos Account (wallet) with sufficient Tezos-side tokens and sufficient additional XTZ (for gas)
 
 ## Configuration
 
@@ -50,9 +50,9 @@ tezex@bot:~/TEZEX/bot$ npm i
 }
 ```
 
-4. You will have to update the config file with your own ethereum and tezos `walletPK` (private keys). The `maxVolume` config let's you tune the amount of tokens you want to trade in a single run of the bot instance, you should specify the exact amount that you want your bot to trade.
+4. You will have to update the config file **with your own** Ethereum and Tezos `walletPK` (private keys), respectively. The `maxVolume` config let's you tune the amount of tokens you want to trade in a single run of the bot instance, you must **specify the exact amount** that you want your bot to trade. **If you do not want to** facilitate swaps for some particular token listed, for whatever reason, then fill in 0.0 for that token.
 
-5. Once you have setup the config file you can go ahead and start the bot. When the bot will run for the first time it will ask for a password and encrypt your config file after which you won't be able to directly change it. To update the config you will have to remove the encrypted file and re-create the `user-config.json` file with the above details.
+5. Once you have setup the config file you can go ahead and start the bot. When the bot will run for the first time it will ask for a password and encrypt your config file after **which you won't be able to directly change it**. **To update the config you will have to remove the encrypted file and re-create the `user-config.json` file with the above details.**
 
 The snippet below shows the first run of the bot :
 
