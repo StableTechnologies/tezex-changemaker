@@ -6,7 +6,7 @@ TEZEX Bot instances are run by the market makers of the TEZEX platform. Do read 
 
 1. Node 12.x
 2. Ethereum Account (wallet) with sufficient Ethereum-side tokens for which you want to facilitate swaps (e.g. USDC, ETH, WBTC), and sufficient additional ETH (for gas)
-3. Tezos Account (wallet) with sufficient Tezos-side tokens and sufficient additional XTZ (for gas)
+3. Tezos Account (wallet) with sufficient Tezos-side tokens (e.g. XTZ, USDtz, BTCtz, ETHtz, tzBTC), and sufficient additional XTZ (for gas)
 
 ## Configuration
 
