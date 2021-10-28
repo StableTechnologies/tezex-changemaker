@@ -18,13 +18,17 @@ Follow the following steps to setup and run the bot
 tezex@bot:~/TEZEX/bot-tezos-swap$ npm i
 ```
 
-3. In the bot dir you will find a `user-config.json` file with the following details:
+3. In the bot dir you will find `user-config.json` and `volume-config.json` files with the following details:
 
-```json
+```js
+// user config
 {
   "tezos": {
     "walletPK": "your-tezos-private-key"
-  },
+  }
+}
+// volume config
+{
   "maxVolume": {
     "xtz/usdtz": {
       "xtz": 100,
@@ -45,7 +49,7 @@ tezex@bot:~/TEZEX/bot-tezos-swap$ npm i
 }
 ```
 
-4. You will have to update the config file with your own tezos `walletPK` (private keys). The `maxVolume` config let's you tune the amount of tokens you want to trade in a single run of the bot instance, you should specify the exact amount that you want your bot to trade. `tolerance` specifies how much you are willing to pay above the current market rate, this is kept because the oracle rates can be very volatile. The value of `tolerance` is in percentage, for eg. if a user is offering a swap of `10 XTZ` for `60 USDtz` but the current value of `1 XTZ = 5 USDtz` then your bot will take up this swap iff your `tolerance` is set to `20` or above else it will ignore this offer as the difference in the market rate and the users expected rate is `20%`.
+4. You will have to update the config files with your own tezos `walletPK` (private keys). The `maxVolume` config let's you tune the amount of tokens you want to trade in a single run of the bot instance, you should specify the exact amount that you want your bot to trade. `tolerance` specifies how much you are willing to pay above the current market rate, this is kept because the oracle rates can be very volatile. The value of `tolerance` is in percentage, for eg. if a user is offering a swap of `10 XTZ` for `60 USDtz` but the current value of `1 XTZ = 5 USDtz` then your bot will take up this swap iff your `tolerance` is set to `20` or above else it will ignore this offer as the difference in the market rate and the users expected rate is `20%`.
 
 5. Once you have setup the config file you can go ahead and start the bot. When the bot will run for the first time it will ask for a password and encrypt your config file after which you won't be able to directly change it. To update the config you will have to remove the encrypted file and re-create the `user-config.json` file with the above details.
 
@@ -56,7 +60,7 @@ tezex@bot:~/TEZEX/bot$ npm start
 
 XX Encrypted User Config Not Found!
 
-Please make sure you have created the `user-config.json` file with the required details as mentioned in the documentation
+Please make sure you have created the `user-config.json` and `volume-config.json` files with the required details as mentioned in the documentation
 
 Please enter your password to encrypt the `user-config.json`: *****
 Re-enter password: *****

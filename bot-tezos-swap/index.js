@@ -6,6 +6,7 @@ const {
   encryptUserConfig,
 } = require("./library/encryption");
 const userConfig = require("./user-config.json");
+const volumeConfig = require("./volume-config.json");
 
 const logger = winston.createLogger({
   level: "warn",
@@ -37,7 +38,7 @@ const init = () => {
       config = decryptUserConfig("./user-config.json", password);
     } else {
       console.log(
-        "[x] Encrypted User Config Not Found! \n\nPlease make sure you have created the `user-config.json` file with the required details as mentioned in the documentation"
+        "[x] Encrypted User Config Not Found! \n\nPlease make sure you have created the `user-config.json` and `volume-config.json` files with the required details as mentioned in the documentation"
       );
       const password = readlineSync.question(
         "\n[?] Please enter your password to encrypt the `user-config.json`: ",
@@ -68,10 +69,10 @@ const init = () => {
   }
   const bot = new Bot(logger);
   bot
-    .init(config.tezos, config.maxVolume)
+    .init(config.tezos, volumeConfig.maxVolume)
     .then((data) => {
       showDetails(data);
-      validateBalance(data, config);
+      validateBalance(data);
       bot.start();
     })
     .catch(console.log);
@@ -91,8 +92,8 @@ const validateBalance = ({
           ].balance
             .div(10 ** balances[asset].decimals)
             .toString()} ${balances[asset].symbol} < ${balances[asset].need
-              .div(10 ** balances[asset].decimals)
-              .toString()} ${balances[asset].symbol}\n`
+            .div(10 ** balances[asset].decimals)
+            .toString()} ${balances[asset].symbol}\n`
         );
       }
     }

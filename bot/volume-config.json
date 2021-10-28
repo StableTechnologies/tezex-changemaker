@@ -1,0 +1,20 @@
+{
+    "maxVolume": {
+        "usdc/usdtz": {
+            "usdc": 300,
+            "usdtz": 300
+        },
+        "eth/ethtz": {
+            "eth": 0.1,
+            "ethtz": 0.1
+        },
+        "wbtc/tzbtc": {
+            "wbtc": 0.1,
+            "tzbtc": 0.1
+        },
+        "wbtc/btctz": {
+            "wbtc": 0.1,
+            "btctz": 0.1
+        }
+    }
+}
